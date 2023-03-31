@@ -30,6 +30,25 @@ const signup = async (req, res, next) => {
     next(ex);
   }
 };
+const getUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json('Please provide id');
+    }
+
+    const user = await User.findOne({ id });
+    if (!user) {
+      return res.status(400).json('User not found');
+    }
+
+    return res.status(200).json(user);
+
+  } catch (ex) {
+    next(ex);
+  }
+};
 
 const deleteUser = async (req, res, next) => {
   try {
