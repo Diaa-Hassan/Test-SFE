@@ -15,7 +15,7 @@ const getAllBlogs = async (req, res, next) => {
   }
 
   return res.status(200).json({ blogs });
-}
+};
 
 const getById = async (req, res, next) => {
   const id = req.params.id;
@@ -23,8 +23,7 @@ const getById = async (req, res, next) => {
 
   try {
     blog = await Blog.findById(id);
-  }
-  catch (e) {
+  } catch (e) {
     return console.log(e);
   }
 
@@ -33,6 +32,41 @@ const getById = async (req, res, next) => {
   }
 
   return res.status(200).json({ blog });
-}
+};
 
-module.exports = { getAllBlogs, addBlog, updateBlog, getById, deleteBlog, getByUserId };
+const addBlog = async (req, res, next) => {
+  const { title, desc, img, user } = req.body;
+
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ id: user });
+  } catch (e) {
+    return console.log(e);
+  }
+  if (!existingUser) {
+    return res.status(400).json({ message: " Unautorized" });
+  }
+  const blog = new Blog({
+    title,
+    desc,
+    img,
+    user,
+  });
+
+  try {
+    await blog.save();
+  } catch (e) {
+    return console.log(e);
+  }
+
+  return res.status(200).json({ blog });
+};
+
+module.exports = {
+  getAllBlogs,
+  addBlog,
+  updateBlog,
+  getById,
+  deleteBlog,
+  getByUserId,
+};
