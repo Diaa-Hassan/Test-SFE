@@ -61,6 +61,22 @@ const addBlog = async (req, res, next) => {
 
   return res.status(200).json({ blog });
 };
+
+const deleteBlog = async (req, res, next) => {
+  const id = req.params.id;
+
+  let blog;
+  try {
+    blog = await Blog.findByIdAndRemove(id);
+  } catch (e) {
+    console.log(e);
+  }
+  if (!blog) {
+    return res.status(500).json({ message: "unable to delete" });
+  }
+  return res.status(200).json({ message: "successfuly deleted" });
+};
+
 const updateBlog = async (req, res, next) => {
   const blogId = req.params.id;
   const { title, desc } = req.body;
@@ -70,20 +86,19 @@ const updateBlog = async (req, res, next) => {
     blog = await Blog.findById(blogId);
 
     if (!blog) {
-      return res.status(500).json({ message: "Unable to update" })
+      return res.status(500).json({ message: "Unable to update" });
     }
 
     blog.title = title;
     blog.desc = desc;
 
     await blog.save();
-
   } catch (e) {
     return console.log(e);
   }
 
   return res.status(200).json({ blog });
-}
+};
 
 module.exports = {
   getAllBlogs,
