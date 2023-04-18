@@ -61,6 +61,29 @@ const addBlog = async (req, res, next) => {
 
   return res.status(200).json({ blog });
 };
+const updateBlog = async (req, res, next) => {
+  const blogId = req.params.id;
+  const { title, desc } = req.body;
+  let blog;
+
+  try {
+    blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(500).json({ message: "Unable to update" })
+    }
+
+    blog.title = title;
+    blog.desc = desc;
+
+    await blog.save();
+
+  } catch (e) {
+    return console.log(e);
+  }
+
+  return res.status(200).json({ blog });
+}
 
 module.exports = {
   getAllBlogs,
